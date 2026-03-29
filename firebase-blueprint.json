@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "username": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "moderator", "editor", "creator", "user"] },
+        "isVerified": { "type": "boolean" },
+        "isVip": { "type": "boolean" },
+        "isAdmin": { "type": "boolean" },
+        "isModerator": { "type": "boolean" },
+        "isEditor": { "type": "boolean" },
+        "isCreator": { "type": "boolean" },
+        "isBanned": { "type": "boolean" },
+        "isMuted": { "type": "boolean" },
+        "isFrozen": { "type": "boolean" },
+        "isOnline": { "type": "boolean" },
+        "lastSeen": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "username"]
+    },
+    "posts": {
+      "title": "Post",
+      "description": "A post shared by a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "type": { "type": "string", "enum": ["image", "video", "text"] },
+        "caption": { "type": "string" },
+        "likeCount": { "type": "integer" },
+        "commentCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "createdAt"]
+    },
+    "stories": {
+      "title": "Story",
+      "description": "A short-lived story.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "type": { "type": "string", "enum": ["image", "video"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "mediaUrl", "type"]
+    },
+    "chats": {
+      "title": "Chat",
+      "description": "A chat room between users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants"]
+    },
+    "messages": {
+      "title": "Message",
+      "description": "A message in a chat.",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chatId", "senderId", "text"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "users", "description": "User profiles" },
+    "/posts/{postId}": { "schema": "posts", "description": "User posts" },
+    "/stories/{storyId}": { "schema": "stories", "description": "User stories" },
+    "/chats/{chatId}": { "schema": "chats", "description": "Chat rooms" },
+    "/chats/{chatId}/messages/{messageId}": { "schema": "messages", "description": "Chat messages" }
+  }
+}

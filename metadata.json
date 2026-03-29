@@ -1,0 +1,8 @@
+{
+  "name": "InstaClone AI",
+  "description": "A modern, stylish social media platform inspired by Instagram, featuring real-time posts, likes, comments, and AI-powered captions.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
