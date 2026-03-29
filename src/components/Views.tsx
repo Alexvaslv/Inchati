@@ -1,6 +1,7 @@
 import React from "react";
 import { Search as SearchIcon, Grid, UserPlus, Bookmark, Instagram, Heart, LogOut, Loader2, MessageCircle, CheckCircle, Star, ShieldCheck, Shield, PenTool, Sparkles, LifeBuoy, ArrowLeft, User } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { User as FirebaseUser } from "firebase/auth";
 import { auth, db, logout, handleFirestoreError, OperationType } from "../lib/firebase";
 import { cn, formatDate } from "../lib/utils";
 import { collection, query, where, orderBy, onSnapshot, doc } from "firebase/firestore";
@@ -8,27 +9,30 @@ import { Post, UserProfile } from "../types";
 import { AdminPanel } from "./AdminPanel";
 import { EditProfile } from "./EditProfile";
 
-export const SearchView: React.FC<{ onSelectUser: (uid: string) => void }> = ({ onSelectUser }) => {
+export const SearchView: React.FC<{ onSelectUser: (uid: string) => void, user: FirebaseUser | null }> = ({ onSelectUser, user }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [results, setResults] = React.useState<UserProfile[]>([]);
   const [allUsers, setAllUsers] = React.useState<UserProfile[]>([]);
   const [admins, setAdmins] = React.useState<UserProfile[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const currentUser = auth.currentUser;
 
   React.useEffect(() => {
-    if (!auth.currentUser) return;
+    if (!user) {
+      setAllUsers([]);
+      setAdmins([]);
+      return;
+    }
     const q = query(collection(db, "users"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const users = snapshot.docs.map(doc => doc.data() as UserProfile);
-      const filteredUsers = users.filter(u => u.uid !== currentUser?.uid);
+      const filteredUsers = users.filter(u => u.uid !== user.uid);
       setAllUsers(filteredUsers);
       setAdmins(filteredUsers.filter(u => u.isAdmin || u.isModerator || u.role === 'admin' || u.role === 'moderator'));
     }, (error) => {
       handleFirestoreError(error, OperationType.LIST, "users");
     });
     return unsubscribe;
-  }, [currentUser]);
+  }, [user]);
 
   React.useEffect(() => {
     if (!searchTerm.trim()) {

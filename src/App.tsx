@@ -195,7 +195,7 @@ export default function App() {
             onBack={() => setSelectedProfileUid(null)} 
           />
         ) : (
-          <SearchView onSelectUser={(uid) => setSelectedProfileUid(uid)} />
+          <SearchView onSelectUser={(uid) => setSelectedProfileUid(uid)} user={user} />
         );
       case "chat":
         return <ChatView />;
@@ -254,6 +254,7 @@ export default function App() {
         onOpenCreate={() => setIsCreateOpen(true)} 
         currentTab={currentTab}
         setTab={setCurrentTab}
+        user={user}
       />
       
       <main className="max-w-5xl mx-auto px-4 py-12">

@@ -5,19 +5,23 @@ import { Auth } from "./Auth";
 import { cn } from "../lib/utils";
 import { doc, onSnapshot } from "firebase/firestore";
 import { UserProfile } from "../types";
+import { User as FirebaseUser } from "firebase/auth";
 
 interface NavbarProps {
   onOpenCreate: () => void;
   currentTab: string;
   setTab: (tab: string) => void;
+  user: FirebaseUser | null;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenCreate, currentTab, setTab }) => {
-  const user = auth.currentUser;
+export const Navbar: React.FC<NavbarProps> = ({ onOpenCreate, currentTab, setTab, user }) => {
   const [profile, setProfile] = React.useState<UserProfile | null>(null);
 
   React.useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setProfile(null);
+      return;
+    }
     const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) setProfile(snap.data() as UserProfile);
     }, (error) => {
